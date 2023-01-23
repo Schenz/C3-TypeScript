@@ -7,7 +7,7 @@ beforeEach(() => {
 });
 
 describe('modPower tests', () => {
-    test.each`
+    it.each`
         a        | b        | n         | expected
         ${4}     | ${13}    | ${497}    | ${445}
         ${67930} | ${32319} | ${103969} | ${6582}
