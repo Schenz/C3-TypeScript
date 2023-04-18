@@ -2,8 +2,6 @@ export class Kata {
     roundRobinTournamentRecursive = (
         teams: number
     ): (number | null)[][] | undefined => {
-        const startTime = performance.now();
-
         if (teams <= 1) {
             return [[-1]];
         }
@@ -13,11 +11,6 @@ export class Kata {
             fixtures: (number | null)[][] = []
         ): (number | null)[][] | undefined => {
             if (teams.length === 0) {
-                console.log(
-                    `Tournament created in ${
-                        performance.now() - startTime
-                    } milliseconds.`
-                );
                 return fixtures;
             }
 
@@ -42,7 +35,6 @@ export class Kata {
     };
 
     createRoundRobin = (numTeams: number): string[][] => {
-        const startTime = performance.now();
         const fixtures: string[][] = [];
         const teams: string[] = [];
         for (let i = 1; i <= numTeams; i++) {
@@ -56,11 +48,31 @@ export class Kata {
             }
             teams.splice(1, 0, teams.pop() as string);
         }
-        console.log(
-            `Tournament created in ${
-                performance.now() - startTime
-            } milliseconds.`
-        );
+
         return fixtures;
+    };
+
+    buildMatchesTable = (numTeams: number): number[][][] => {
+        if (numTeams % 2 !== 0) {
+            throw new Error('Number of teams must be even.');
+        }
+
+        const matches: number[][][] = [];
+        const teams: number[] = Array.from(
+            { length: numTeams },
+            (_, i) => i + 1
+        );
+
+        for (let round = 1; round < numTeams; round++) {
+            const roundMatches: number[][] = [];
+            for (let i = 0; i < numTeams / 2; i++) {
+                const team1 = teams[i];
+                const team2 = teams[numTeams - 1 - i];
+                roundMatches.push([team1, team2]);
+            }
+            matches.push(roundMatches);
+            teams.splice(1, 0, teams.pop() as number);
+        }
+        return matches;
     };
 }
