@@ -9,7 +9,7 @@ export class Kata {
         bitArray[hash3] = 1;
     };
 
-    hash = (key: string, seed: number): number => {
+    private hash = (key: string, seed: number): number => {
         let hash = 0;
         for (let i = 0; i < key.length; i++) {
             hash = seed * (hash + key.charCodeAt(i));
