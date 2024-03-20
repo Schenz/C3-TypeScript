@@ -8,13 +8,16 @@ beforeEach(() => {
 
 describe('Kata Tests', () => {
     it.each`
-        name         | expected
-        ${'Ingage'}  | ${'Hello Ingage'}
-        ${'Brandon'} | ${'Hello Brandon'}
+        text    | shift  |  expected
+        ${'1'}  | ${1}   | ${'1'}
+        ${'a'}  | ${1}   | ${'b'}
+        ${'a'}  | ${-1}  | ${'z'}
+        ${'a'}  | ${27}  | ${'b'}
+        ${'A'}  | ${1}   | ${'B'}
     `(
-        'returns $expected when $name is passed to function',
-        ({ name, expected }) => {
-            expect(fixture.hello(name)).toEqual(expected);
+        'returns $expected when $text is passed to function with shift of $shift',
+        ({ text, shift, expected }) => {
+            expect(fixture.ceaserEncryption(text, shift)).toEqual(expected);
         }
     );
 });
