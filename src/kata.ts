@@ -1,5 +1,11 @@
+type Item = {
+    name: string;
+    weight: number;
+    value: number;
+};
+
 export class Kata {
-    static knapsack(items: { name: string, weight: number, value: number }[], capacity: number): { name: string, weight: number, value: number }[] {
+    static knapsack(items: Item[], capacity: number): Item[] {
         const itemCount = items.length;
         const knapsackMatrix: number[][] = Array.from({ length: itemCount + 1 }, () => Array(capacity + 1).fill(0));
 
@@ -18,7 +24,7 @@ export class Kata {
         }
 
         let remainingCapacity = capacity;
-        const selectedItems: { name: string, weight: number, value: number }[] = [];
+        const selectedItems: Item[] = [];
         let currentItemIndex = itemCount, currentCapacity = capacity;
         while (currentItemIndex > 0 && currentCapacity > 0) {
             if (knapsackMatrix[currentItemIndex][currentCapacity] !== knapsackMatrix[currentItemIndex - 1][currentCapacity]) {
@@ -35,7 +41,7 @@ export class Kata {
 }
 
 // Test
-const items = [
+const items: Item[] = [
     { name: "Diamond necklace", weight: 2, value: 50_000 },
     { name: "Antique gold pocket watch", weight: 1, value: 8_000 },
     { name: "Rare vintage wine collection", weight: 20, value: 15_000 },
