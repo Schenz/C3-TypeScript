@@ -4,37 +4,71 @@ type Item = {
     value: number;
 };
 
-export class Kata {
-    static knapsack(items: Item[], capacity: number): Item[] {
+export class KnapsackSolver {
+    static solveKnapsack(items: Item[], capacity: number): Item[] {
         const itemCount = items.length;
-        const knapsackMatrix: number[][] = Array.from({ length: itemCount + 1 }, () => Array(capacity + 1).fill(0));
 
+        // Create a 2D array to store maximum values for different combinations of items and capacities
+        const dpMatrix: number[][] = Array.from({ length: itemCount + 1 }, () => Array(capacity + 1).fill(0));
+
+        // Fill the dynamic programming matrix with values based on knapsack problem logic
+        console.log("Filling the Dynamic Programming Matrix:");
         for (let itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
             const currentItem = items[itemIndex - 1];
+            console.log(`\tConsidering item: ${currentItem.name}`);
             for (let currentCapacity = 1; currentCapacity <= capacity; currentCapacity++) {
+                console.log(`\t\tCurrent capacity: ${currentCapacity}`);
                 if (currentItem.weight <= currentCapacity) {
-                    knapsackMatrix[itemIndex][currentCapacity] = Math.max(
-                        currentItem.value + knapsackMatrix[itemIndex - 1][currentCapacity - currentItem.weight],
-                        knapsackMatrix[itemIndex - 1][currentCapacity]
-                    );
+                    // If the current item can fit into the current capacity,
+                    // choose the maximum value between including and excluding the current item
+                    const valueWithItem = currentItem.value + dpMatrix[itemIndex - 1][currentCapacity - currentItem.weight];
+                    const valueWithoutItem = dpMatrix[itemIndex - 1][currentCapacity];
+                    console.log(`\t\t\tValue with item: ${valueWithItem}`);
+                    console.log(`\t\t\tValue without item: ${valueWithoutItem}`);
+                    dpMatrix[itemIndex][currentCapacity] = Math.max(valueWithItem, valueWithoutItem);
                 } else {
-                    knapsackMatrix[itemIndex][currentCapacity] = knapsackMatrix[itemIndex - 1][currentCapacity];
+                    // If the current item cannot fit into the current capacity,
+                    // simply use the value without including the current item
+                    dpMatrix[itemIndex][currentCapacity] = dpMatrix[itemIndex - 1][currentCapacity];
                 }
+                console.log(`\t\tCurrent cell value: ${dpMatrix[itemIndex][currentCapacity]}`);
             }
         }
 
+        // Display the filled dynamic programming matrix
+        console.log("Dynamic Programming Matrix:");
+        for (let i = 0; i <= itemCount; i++) {
+            console.log(dpMatrix[i].join(", "));
+        }
+
+        // Backtrack to find the selected items
         let remainingCapacity = capacity;
         const selectedItems: Item[] = [];
         let currentItemIndex = itemCount, currentCapacity = capacity;
+        console.log("Backtracking to find selected items:");
         while (currentItemIndex > 0 && currentCapacity > 0) {
-            if (knapsackMatrix[currentItemIndex][currentCapacity] !== knapsackMatrix[currentItemIndex - 1][currentCapacity]) {
-                const selectedItem = items[currentItemIndex - 1];
-                selectedItems.push({ name: selectedItem.name, weight: selectedItem.weight, value: selectedItem.value });
-                remainingCapacity -= selectedItem.weight;
-                currentCapacity -= selectedItem.weight;
+            const currentItem = items[currentItemIndex - 1];
+            const valueWithoutItem = dpMatrix[currentItemIndex - 1][currentCapacity];
+            console.log(`\tConsidering item: ${currentItem.name}`);
+            console.log(`\tRemaining capacity: ${currentCapacity}`);
+            console.log(`\tValue without item: ${valueWithoutItem}`);
+            // Check if the value with the current item is greater than the value without the current item
+            if (dpMatrix[currentItemIndex][currentCapacity] !== valueWithoutItem) {
+                // If including the current item increases the value, add it to the selected items
+                console.log(`\t\tIncluding item: ${currentItem.name}`);
+                selectedItems.push(currentItem);
+                // Update remaining capacity and current capacity
+                remainingCapacity -= currentItem.weight;
+                currentCapacity -= currentItem.weight;
+                console.log(`\t\tRemaining capacity after including item: ${remainingCapacity}`);
             }
+            // Move to the previous item
             currentItemIndex--;
         }
+
+        // Display the selected items
+        console.log("Selected Items:");
+        selectedItems.forEach(item => console.log(item));
 
         return selectedItems;
     }
@@ -65,7 +99,9 @@ const items: Item[] = [
 ];
 const capacity = 30;
 
-const selectedItems = Kata.knapsack(items, capacity);
+//const selectedItems = KnapsackSolver.solveKnapsack(items.sort((a, b) => a.weight - b.weight), capacity);
+//const selectedItems = KnapsackSolver.solveKnapsack(items.sort((a, b) => b.value - a.value), capacity);
+const selectedItems = KnapsackSolver.solveKnapsack(items, capacity);
 
 console.log("Selected items:");
 selectedItems
