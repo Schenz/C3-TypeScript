@@ -23,20 +23,30 @@ function knapsack(items: Item[], knapsackCapacity: number): KnapsackResult {
 
     // Build up the dp array
     for (let currentItemIdx = 1; currentItemIdx <= numItems; currentItemIdx++) {
+        console.warn(`currentItemIdx: ${currentItemIdx}`);
         const currentItem = items[currentItemIdx - 1];
         for (let currentCapacity = 1; currentCapacity <= knapsackCapacity; currentCapacity++) {
+            console.warn(`\tcurrentCapacity: ${currentCapacity}`);
             if (currentItem.weight <= currentCapacity) {
-                dp[currentItemIdx][currentCapacity] = Math.max(
+                console.warn(`\t\titem fits`);
+                const valueToStore = Math.max(
                     currentItem.value + dp[currentItemIdx - 1][currentCapacity - currentItem.weight],
                     dp[currentItemIdx - 1][currentCapacity]
                 );
+                console.warn(`\t\t\tvalueToStore: ${valueToStore}`);
+                dp[currentItemIdx][currentCapacity] = valueToStore;
             } else {
+                console.warn(`\t\titem does NOT fit`);
+                console.warn(`\t\t\tvalueToStore: ${dp[currentItemIdx - 1][currentCapacity]}`);
                 dp[currentItemIdx][currentCapacity] = dp[currentItemIdx - 1][currentCapacity];
             }
         }
     }
 
-    console.dir(dp);
+    // console.dir(dp);
+    const csvString: string = dp.map(row => row.join(',')).join('\n');
+
+    console.log(csvString);
 
     // Reconstruct the selected items
     const selectedItems: Item[] = [];
@@ -44,8 +54,8 @@ function knapsack(items: Item[], knapsackCapacity: number): KnapsackResult {
     let currentCapacity = knapsackCapacity;
     while (currentItemIdx > 0 && currentCapacity > 0) {
         if (dp[currentItemIdx][currentCapacity] !== dp[currentItemIdx - 1][currentCapacity]) {
-            console.warn(`currentItemIdx: ${currentItemIdx}`);
-            console.warn(`currentCapacity: ${currentCapacity}`);
+            //console.warn(`currentItemIdx: ${currentItemIdx}`);
+            //console.warn(`currentCapacity: ${currentCapacity}`);
             selectedItems.push(items[currentItemIdx - 1]);
             currentCapacity -= items[currentItemIdx - 1].weight;
         }
