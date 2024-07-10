@@ -6,15 +6,20 @@ beforeEach(() => {
     fixture = new Kata();
 });
 
+jest.setTimeout(300000);
+
 describe('Kata Tests', () => {
     it.each`
-        name         | expected
-        ${'Ingage'}  | ${'Hello Ingage'}
-        ${'Brandon'} | ${'Hello Brandon'}
+        days         | expected
+        ${1}         | ${55}
+        ${2}         | ${59.5}
+        ${7}         | ${54.3}
+        ${14}        | ${49.9}
+        ${365}       | ${68.4}
     `(
-        'returns $expected when $name is passed to function',
-        ({ name, expected }) => {
-            expect(fixture.hello(name)).toEqual(expected);
+        'returns $expected when $days is passed to function',
+        async ({ days, expected }) => {
+            expect(await fixture.getWeatherData(days)).toEqual(expected);
         }
     );
 });
