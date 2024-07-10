@@ -1,3 +1,4 @@
+import 'jest';
 import { Kata } from './kata';
 
 let fixture: Kata;
@@ -8,13 +9,12 @@ beforeEach(() => {
 
 describe('Kata Tests', () => {
     it.each`
-        name         | expected
-        ${'Ingage'}  | ${'Hello Ingage'}
-        ${'Brandon'} | ${'Hello Brandon'}
+        source                                                                  | expected
+        ${["file10", "file2", "file1a", "file1b", "file20", "file11", "file3"]} | ${["file1a", "file1b", "file2", "file3", "file10", "file11", "file20"]}
     `(
-        'returns $expected when $name is passed to function',
-        ({ name, expected }) => {
-            expect(fixture.hello(name)).toEqual(expected);
+        'returns [$expected] when [$source] is passed to function',
+        ({ source, expected }) => {
+            expect(fixture.sort(source)).toEqual(expected);
         }
     );
 });
