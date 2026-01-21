@@ -24,6 +24,12 @@ export class Kata {
                 .replace(/\s+/g, '')         // Remove all whitespace
                 .replace(/,/g, '');          // Remove commas used as thousand separators
 
+            // Update to properly exclude a value of 53.XX
+            if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+                filteredOutRecords.push(row);
+                return null;
+            }
+
             if (isNaN(parseFloat(value))) {
                 filteredOutRecords.push(row);
                 return null;
